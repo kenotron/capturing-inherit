@@ -9,34 +9,15 @@ const forked = fork("runner.js", {
 });
 ```
 
-## 2. `runner.js` contains a `stdout._write` monkey patch
-
+## 2. `runner.js`, in turn executes a command (even `child_process` spawn or exec with inherit)
 ```js
-function monkeyPatchProcessOutputs() {
-  const stdoutBuffer = [];
-  const write = process.stdout._write;
-  const fd = fs.openSync("stdout.log", "w");
-
-  process.stdout._write = (chunk, encoding, callback) => {
-    stdoutBuffer.push(chunk);
-    fs.appendFileSync(fd, chunk);
-    write.apply(process.stdout, [chunk, encoding, callback]);
-  };
-}
-```
-
-## 3. `runner.js` then `child_process.exec` w/ `stdio:inherit`
-
-```js
-monkeyPatchProcessOutputs();
-
 execSync(`npm run test`, {
   stdio: ["inherit", "inherit", "inherit"],
   env: process.env,
 });
 ```
 
-## 4. Capture output from pipe: `index.js`
+## 3. Capture output from pipe: `index.js`
 
 ```js
 let msgs = [];

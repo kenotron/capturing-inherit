@@ -1,21 +1,19 @@
-const fs = require("fs");
-const { execSync } = require("child_process");
+const cp = require("child_process");
 
-function monkeyPatchProcessOutputs() {
-  const stdoutBuffer = [];
-  const write = process.stdout._write;
-  const fd = fs.openSync("stdout.log", "w");
+console.log("running a npm script");
+console.log("--------------------");
 
-  process.stdout._write = (chunk, encoding, callback) => {
-    stdoutBuffer.push(chunk);
-    fs.appendFileSync(fd, chunk);
-    write.apply(process.stdout, [chunk, encoding, callback]);
-  };
-}
-
-monkeyPatchProcessOutputs();
-
-execSync(`npm run test`, {
+const npmCp = cp.spawn(`npm`, ["run", "test"], {
   stdio: ["inherit", "inherit", "inherit"],
   env: process.env,
+});
+
+npmCp.on("exit", (code, status) => {
+  console.log("\n");
+  console.log("running arbitrary commands");
+  console.log("-------------------------");
+  cp.spawn(`ls`, ["--color"], {
+    stdio: ["inherit", "inherit", "inherit"],
+    env: process.env,
+  });
 });
