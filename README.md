@@ -1,5 +1,5 @@
 # How to capture a child_process's inherit outputs
-https://twitter.com/kenneth_chau/status/1538205757291651072?s=20&t=Koe9gd4XMzdEgKi9IImzog
+https://twitter.com/kenneth_chau/status/1538216216572985346?s=20&t=95R6BkA_EqXiN52s06x7ig
 
 ## 1. fork a `runner.js` w/ `stdio: pipe` + add `on('data')` handler
 
